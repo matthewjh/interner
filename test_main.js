@@ -1,4 +1,5 @@
 var tests = [];
+
 for (var file in window.__karma__.files) {
   if (window.__karma__.files.hasOwnProperty(file)) {
     if (/_spec\.js$/.test(file)) {
@@ -6,6 +7,7 @@ for (var file in window.__karma__.files) {
     }
   }
 }
+
 
 requirejs.config({
   // Karma serves files from '/base'

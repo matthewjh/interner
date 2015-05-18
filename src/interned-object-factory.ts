@@ -69,7 +69,7 @@ export class JitInternedObjectFactory<T> implements InternedObjectFactory<T> {
 
     console.log(functionString);
 
-    return new Function('cachedObj', 'objArgs', 'args', functionString).bind(null, obj, objArgs);
+    return new Function('cachedObj', 'objArgs', 'args', functionString).bind(undefined, obj, objArgs);
   }
 }
 

@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'node_modules/requirejs/require.js',
 
+      {pattern: 'node_modules/es6-shim/es6-shim.js', included: false},
       {pattern: 'src/**/*.ts', included: false},
 
       'test_main.js'
