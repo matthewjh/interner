@@ -10,7 +10,7 @@ class ClassWithSimpleParameters {
 }
 
 function runPerformanceBenchmark(fn: Function) {
-  it('', () => {
+  xit('', () => {
     var totalDuration = 0;
 
     console.log('-------------')
@@ -30,7 +30,7 @@ function runPerformanceBenchmark(fn: Function) {
   });
 }
 
-fdescribe('benchmark of creating 100 interns and then fetching them 1000 times each', () => {
+describe('benchmark of creating 100 interns and then fetching them 1000 times each', () => {
   var internedObjectFactory: JitInternedObjectFactory<ClassWithSimpleParameters>;
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ fdescribe('benchmark of creating 100 interns and then fetching them 1000 times e
   });
 });
 
-fdescribe('benchmark of creating 100 Map entries and then fetching them 1000 times each', () => {
+describe('benchmark of creating 100 Map entries and then fetching them 1000 times each', () => {
   var map: Map<number, Object>;
 
   beforeEach(() => {
