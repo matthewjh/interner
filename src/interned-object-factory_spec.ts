@@ -1,5 +1,13 @@
 import {InternedObjectFactory, JitInternedObjectFactory} from 'interned-object-factory';
 
+var returnValue = {};
+
+class ExplicitReturnValueClass {
+  constructor() {
+    return returnValue;
+  }
+}
+
 class ClassWithSimpleParameters {
   constructor(public x: number, public y: number) {}
 }
@@ -35,8 +43,8 @@ describe('JitInternedObjectFactory', () => {
   });
 
    describe('class with complex parameters', () => {
-    var param1,
-        param2;
+    var param1: ClassWithSimpleParameters,
+        param2: ClassWithSimpleParameters;
 
     beforeEach(() => {
       internedObjectFactory = new JitInternedObjectFactory(ClassWithComplexParameters);
@@ -67,14 +75,6 @@ describe('JitInternedObjectFactory', () => {
   });
 
   it('should return the correct object if an explicit value is returned from the constructor when .get is called', () => {
-    var returnValue = {};
-
-    class ExplicitReturnValueClass {
-      constructor() {
-        return returnValue;
-      }
-    }
-
     internedObjectFactory = new JitInternedObjectFactory(ExplicitReturnValueClass);
 
     expect(internedObjectFactory.get()).toBe(returnValue);
