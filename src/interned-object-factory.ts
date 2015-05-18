@@ -1,4 +1,5 @@
 import {Constructor} from 'core-types';
+import {InternRecord} from 'intern-record';
 
 export interface InternedObjectFactory<T> {
   get(...args: any[]): T;
@@ -8,28 +9,24 @@ export interface InternedObjectFactory<T> {
  * InternedObjectFactory that uses dynamic code generation.
  */
 export class JitInternedObjectFactory<T> implements InternedObjectFactory<T> {
-  private checkFunctions: Array<(args: any[]) => T>;
+  private getIntern: (args: any[]) => T;
+  private internRecords: Array<InternRecord<T>>;
 
   constructor(private Ctor: Constructor<T>) {
-    this.checkFunctions = [];
+    this.getIntern = function () { return null; };
+    this.internRecords = [];
   }
 
   /**
    * Get the interned object that was constructed with the supplied arguments
    */
   get(...args: any[]): T {
+    var obj = this.getIntern(args);
 
-    for (var fn of this.checkFunctions) {
-      var obj = fn(args);
-
-      if (obj) {
-        return obj;
-      }
+    if (!obj) {
+      obj = this.create(args);
+      this.recordObjectCreation(obj, args);
     }
-
-    var obj = this.create(args);
-
-    this.recordObjectCreation(obj, args);
 
     return obj;
   }
@@ -45,37 +42,54 @@ export class JitInternedObjectFactory<T> implements InternedObjectFactory<T> {
   }
 
   private recordObjectCreation(obj: T, args: any[]) {
-    this.checkFunctions.push(this.getCheckFunction(obj, args));
+    var internRecord = new InternRecord(obj, args);
+
+    this.internRecords.push(internRecord);
+    this.getIntern = this.generateGetInternFunction();
   }
 
-  private getCheckFunction(obj: T, objArgs: any[]): (args: any[]) => T {
-    const CACHED_OBJ = 'cachedObj';
+  private generateGetInternFunction(): (args: any[]) => T {
+    const INTERNS = 'interns';
     const ARGS = 'args';
-    const CACHED_OBJ_ARGS = 'cachedObjArgs';
-    var conditionString = '';
-    var functionString: string;
+    const INTERNS_ARGS = 'internsArgs';
+    var functionString = '';
+    var interns: Array<T> = [];
+    var internsArgs: Array<Array<any>> = [];
 
-    for (var i = 0; i < objArgs.length; i++) {
-      conditionString += `${ARGS}[${i}] === ${CACHED_OBJ_ARGS}[${i}]`;
+    var internRecordIndex = 0;
+    for (var internRecord of this.internRecords) {
+      var ifString: string;
+      var conditionString = '';
+      var internArgs = internRecord.args;
+      var intern = internRecord.intern;
 
-      if (i < objArgs.length - 1) {
-        conditionString += '&&';
+      interns.push(intern);
+      internsArgs.push(internArgs);
+
+      var argIndex = 0;
+      for (var arg of internArgs) {
+        conditionString += `${ARGS}[${argIndex}] === ${INTERNS_ARGS}[${internRecordIndex}][${argIndex}]`;
+
+        if (argIndex < internArgs.length - 1) {
+          conditionString += '&&';
+        }
+
+        argIndex++;
       }
+
+      if (conditionString !== '') {
+        ifString = `if (${conditionString}) return ${INTERNS}[${internRecordIndex}];`;
+      } else {
+        ifString = '';
+      }
+
+      functionString += ifString;
+
+      internRecordIndex++;
     }
 
-    if (conditionString !== '') {
-      functionString = `if (${conditionString}) return ${CACHED_OBJ};`;
-    } else {
-      functionString = `return ${CACHED_OBJ};`;
-    }
-
-    console.log(functionString);
-
-    return new Function(CACHED_OBJ, CACHED_OBJ_ARGS, ARGS, functionString).bind(undefined, obj, objArgs);
+    return new Function(INTERNS, INTERNS_ARGS, ARGS, functionString).bind(undefined, interns, internsArgs);
   }
 }
-
-
-
 
 
