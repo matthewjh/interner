@@ -7,7 +7,7 @@ class A {
 describe('JitInternedObjectFactory', () => {
   var internedObjectFactory = new JitInternedObjectFactory(A);
 
-  it('should return the same object when .get is called with the same parameters', () => {
+  fit('should return the same object when .get is called with the same parameters', () => {
     var a1: A = internedObjectFactory.get(4, 5),
         a2: A = internedObjectFactory.get(4, 5);
 
