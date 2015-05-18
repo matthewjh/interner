@@ -6,19 +6,28 @@ export interface Constructor<T> {
   (...args: any[]): T;
 }
   
+/**
+ * InternedObjectFactory that uses dynamic code generation.
+ */
 export class JitInternedObjectFactory<T> implements InternedObjectFactory<T> {
   constructor(private Ctor: Constructor<T>) {}
 
+  /**
+   * Get the interned object that was constructed with the supplied arguments
+   */
   get(...args: any[]): T {
     return this.create(args);
   }
 
-  create(args: any[]): T {
+  /**
+   * Create a new object.
+   * @type {[type]}
+   */
+  private create(args: any[]): T {
     var obj = Object.create(this.Ctor.prototype);
+    var ctorReturnValue = this.Ctor.apply(obj, args);
 
-    this.Ctor.apply(obj, args);
-
-    return obj;
+    return ctorReturnValue ? ctorReturnValue : obj;
   }
 }
 

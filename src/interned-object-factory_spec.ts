@@ -21,10 +21,24 @@ describe('JitInternedObjectFactory', () => {
     expect(a1).not.toBe(a2);
   });
 
-  it('should return an object with the correct properties as assigned by the ctor', () => {
+  it('should return an object with the correct properties as assigned by the ctor when .get is called', () => {
     var a: A = internedObjectFactory.get(10, 11);
 
     expect(a.x).toBe(10);
     expect(a.y).toBe(11);
+  });
+
+  it('should return the correct object if an explicit value is returned from the constructor when .get is called', () => {
+    var returnValue = {};
+
+    class ExplicitReturnValueClass {
+      constructor() {
+        return returnValue;
+      }
+    }
+
+    internedObjectFactory = new JitInternedObjectFactory(ExplicitReturnValueClass);
+
+    expect(internedObjectFactory.get()).toBe(returnValue);
   });
 });
