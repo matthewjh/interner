@@ -49,27 +49,29 @@ export class JitInternedObjectFactory<T> implements InternedObjectFactory<T> {
   }
 
   private getCheckFunction(obj: T, objArgs: any[]): (args: any[]) => T {
+    const CACHED_OBJ = 'cachedObj';
+    const ARGS = 'args';
+    const CACHED_OBJ_ARGS = 'cachedObjArgs';
     var conditionString = '';
+    var functionString: string;
 
     for (var i = 0; i < objArgs.length; i++) {
-      conditionString += `args[${i}] === objArgs[${i}]`;
+      conditionString += `${ARGS}[${i}] === ${CACHED_OBJ_ARGS}[${i}]`;
 
       if (i < objArgs.length - 1) {
         conditionString += '&&';
       }
     }
 
-    var functionString: string;
-
     if (conditionString !== '') {
-      functionString = `if (${conditionString}) return cachedObj;`;
+      functionString = `if (${conditionString}) return ${CACHED_OBJ};`;
     } else {
-      functionString = 'return cachedObj;'
+      functionString = `return ${CACHED_OBJ};`;
     }
 
     console.log(functionString);
 
-    return new Function('cachedObj', 'objArgs', 'args', functionString).bind(undefined, obj, objArgs);
+    return new Function(CACHED_OBJ, CACHED_OBJ_ARGS, ARGS, functionString).bind(undefined, obj, objArgs);
   }
 }
 
