@@ -1,4 +1,6 @@
-import {InternedObjectFactory, JitInternedObjectFactory} from 'interned-object-factory';
+import {InternedObjectFactory} from 'interned-object-factory';
+import {InternCache} from 'cache/intern-cache';
+import {JitInternCache} from 'cache/jit-intern-cache';
 
 const TIMES_TO_RUN = 100;
 
@@ -31,10 +33,12 @@ function runPerformanceBenchmark(fn: Function) {
 }
 
 describe('benchmark of creating 100 interns and then fetching them 1000 times each', () => {
-  var internedObjectFactory: JitInternedObjectFactory<ClassWithSimpleParameters>;
+  var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
+  var internCache: InternCache<ClassWithSimpleParameters>;
 
   beforeEach(() => {
-    internedObjectFactory = new JitInternedObjectFactory(ClassWithSimpleParameters);
+    internCache = new JitInternCache<ClassWithSimpleParameters>();
+    internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
   });
 
   runPerformanceBenchmark(() => {

@@ -1,4 +1,5 @@
-import {InternedObjectFactory, JitInternedObjectFactory} from 'interned-object-factory';
+import {InternedObjectFactory, AbstractInternedObjectFactory} from 'interned-object-factory';
+import {JitInternCache} from 'cache/jit-intern-cache';
 
 var returnValue = {};
 
@@ -16,18 +17,22 @@ class ClassWithComplexParameters {
   constructor(public x: ClassWithSimpleParameters, public y: ClassWithSimpleParameters) {}
 }
 
-describe('JitInternedObjectFactory', () => {
-  var internedObjectFactory: JitInternedObjectFactory<ClassWithSimpleParameters>;
+describe('InternedObjectFactory', () => {
+  var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
+  var internCache: JitInternCache<ClassWithSimpleParameters>;
 
   beforeEach(() => {
-    internedObjectFactory = new JitInternedObjectFactory(ClassWithSimpleParameters);
+    internCache = new JitInternCache<ClassWithSimpleParameters>();
+    internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
   });
 
   describe('class with simple parameters', () => {
-    var internedObjectFactory: JitInternedObjectFactory<ClassWithSimpleParameters>;
+    var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
+    var internCache: JitInternCache<ClassWithSimpleParameters>;
 
     beforeEach(() => {
-      internedObjectFactory = new JitInternedObjectFactory(ClassWithSimpleParameters);
+      internCache = new JitInternCache<ClassWithSimpleParameters>();
+      internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
     });
 
     it('should return the same object when .get is called with the same parameters', () => {
@@ -53,12 +58,14 @@ describe('JitInternedObjectFactory', () => {
   });
 
    describe('class with complex parameters', () => {
-    var internedObjectFactory: JitInternedObjectFactory<ClassWithComplexParameters>,
+    var internedObjectFactory: InternedObjectFactory<ClassWithComplexParameters>,
+        internCache: JitInternCache<ClassWithComplexParameters>,
         param1: ClassWithSimpleParameters,
         param2: ClassWithSimpleParameters;
 
     beforeEach(() => {
-      internedObjectFactory = new JitInternedObjectFactory(ClassWithComplexParameters);
+      internCache = new JitInternCache<ClassWithComplexParameters>();
+      internedObjectFactory = new InternedObjectFactory(ClassWithComplexParameters, internCache);
       param1 = new ClassWithSimpleParameters(5, 5);
       param2 = new ClassWithSimpleParameters(10, 5);
     });
@@ -86,7 +93,8 @@ describe('JitInternedObjectFactory', () => {
   });
 
   it('should return the correct object if an explicit value is returned from the constructor when .get is called', () => {
-    var internedObjectFactory = new JitInternedObjectFactory(ExplicitReturnValueClass);
+    var internCache = new JitInternCache<ExplicitReturnValueClass>();
+    var internedObjectFactory = new InternedObjectFactory(ExplicitReturnValueClass, internCache);
 
     expect(internedObjectFactory.get()).toBe(returnValue);
   });
