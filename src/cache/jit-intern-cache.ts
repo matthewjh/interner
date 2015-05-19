@@ -1,6 +1,11 @@
 import {InternCache} from 'cache/intern-cache';
 import {InternRecord} from 'intern-record';
 
+const INTERNS = 'interns';
+const ARGS = 'args';
+const INTERNS_ARGS = 'internsArgs';
+
+
 export class JitInternCache<T> implements InternCache<T> {
   private getIntern: (args: Array<any>) => T;
   private internRecords: Array<InternRecord<T>>;
@@ -21,10 +26,7 @@ export class JitInternCache<T> implements InternCache<T> {
     return this.getIntern(args);
   }
 
-  private generateGetInternFunction(): (args: any[]) => T {
-    const INTERNS = 'interns';
-    const ARGS = 'args';
-    const INTERNS_ARGS = 'internsArgs';
+  private generateGetInternFunction(): (args: Array<any>) => T {
     var functionString = '';
     var interns: Array<T> = [];
     var internsArgs: Array<Array<any>> = [];
