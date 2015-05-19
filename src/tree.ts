@@ -11,6 +11,11 @@ export class NodeWithLabeledLinks<TLabel, TValue> {
   }
 
   getChildBy(linkLabel: TLabel): NodeWithLabeledLinks<any, any> {
-    return this.links.get(linkLabel);
+    // var a = performance.now();
+    var child = this.links.get(linkLabel);
+    // var b = performance.now();
+    // console.log('perf: ', b - a);
+
+    return child;
   }
 }

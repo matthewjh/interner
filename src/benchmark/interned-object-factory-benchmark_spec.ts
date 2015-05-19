@@ -1,6 +1,7 @@
 import {InternedObjectFactory} from 'interned-object-factory';
-import {InternCache} from 'cache/intern-cache';
 import {JitInternCache} from 'cache/jit-intern-cache';
+import {TreeInternCache} from 'cache/tree-intern-cache';
+import {InternCache} from 'cache/intern-cache';
 
 const TIMES_TO_RUN = 100;
 
@@ -12,7 +13,7 @@ class ClassWithSimpleParameters {
 }
 
 function runPerformanceBenchmark(fn: Function) {
-  xit('', () => {
+  it('', () => {
     var totalDuration = 0;
 
     console.log('-------------')
@@ -32,25 +33,33 @@ function runPerformanceBenchmark(fn: Function) {
   });
 }
 
-describe('benchmark of creating 100 interns and then fetching them 1000 times each', () => {
-  var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
-  var internCache: InternCache<ClassWithSimpleParameters>;
+[
+  JitInternCache,
+  TreeInternCache
+].forEach((InternCacheImpl) => {
 
-  beforeEach(() => {
-    internCache = new JitInternCache<ClassWithSimpleParameters>();
-    internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
-  });
+  describe(`InternedObjectFactory with ${InternCacheImpl.name}: benchmark of creating 100 interns and then fetching them 1000 times each`, () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 
-  runPerformanceBenchmark(() => {
-    for (var i = 0; i < 100; i++) {
-      internedObjectFactory.get(i, i, i, i, i);
-    }
+    var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
+    var internCache: InternCache<ClassWithSimpleParameters>;
 
-    for (i = 0; i < 100; i++) {
-      for (var j = 0; j < 1000; j++) {
+    beforeEach(() => {
+      internCache = new InternCacheImpl<ClassWithSimpleParameters>();
+      internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
+    });
+
+    runPerformanceBenchmark(() => {
+      for (var i = 0; i < 100; i++) {
         internedObjectFactory.get(i, i, i, i, i);
       }
-    }
+
+      for (i = 0; i < 100; i++) {
+        for (var j = 0; j < 1000; j++) {
+          internedObjectFactory.get(i, i, i, i, i);
+        }
+      }
+    });
   });
 });
 
@@ -68,7 +77,7 @@ describe('benchmark of creating 100 Map entries and then fetching them 1000 time
 
     for (i = 0; i < 100; i++) {
       for (var j = 0; j < 1000; j++) {
-        map.get(i)
+        map.get(i);
       }
     }
   });
