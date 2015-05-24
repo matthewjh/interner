@@ -38,7 +38,7 @@ function runPerformanceBenchmark(fn: Function) {
   TreeInternCache
 ].forEach((InternCacheImpl) => {
 
-  describe(`InternedObjectFactory with ${InternCacheImpl.name}: benchmark of creating 100 interns and then fetching them 1000 times each`, () => {
+  xdescribe(`InternedObjectFactory with ${InternCacheImpl.name}: benchmark of creating 100 interns and then fetching them 1000 times each`, () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 
     var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
@@ -63,7 +63,7 @@ function runPerformanceBenchmark(fn: Function) {
   });
 });
 
-describe('benchmark of creating 100 Map entries and then fetching them 1000 times each', () => {
+xdescribe('benchmark of creating 100 Map entries and then fetching them 1000 times each', () => {
   var map: Map<number, Object>;
 
   beforeEach(() => {
