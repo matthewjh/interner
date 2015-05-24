@@ -5,7 +5,7 @@ export class TreeInternCache<T> implements InternCache<T> {
   private rootNode: NodeWithLabeledLinks<any, T>;
 
   constructor() {
-    this.rootNode = new NodeWithLabeledLinks();
+    this.rootNode = new NodeWithLabeledLinks<any, T>();
   }
 
   get(args: Array<any>): T {
@@ -14,7 +14,7 @@ export class TreeInternCache<T> implements InternCache<T> {
     return node && node.value;
   }
 
-  set(instance: T, args: Array<any>) {
+  set(instance: T, args: Array<any>): void {
     this.setNodeValueAtPath(instance, args);
   }
 
@@ -32,7 +32,7 @@ export class TreeInternCache<T> implements InternCache<T> {
     }
   }
 
-  private setNodeValueAtPath(value: T, labels: Array<any>): NodeWithLabeledLinks<any, T> {
+  private setNodeValueAtPath(value: T, labels: Array<any>): void {
     var node = this.rootNode;
     var nextNode: NodeWithLabeledLinks<any, T>;
 
@@ -40,7 +40,7 @@ export class TreeInternCache<T> implements InternCache<T> {
       nextNode = node.getChildBy(label);
 
       if (!nextNode) {
-        nextNode = new NodeWithLabeledLinks();
+        nextNode = new NodeWithLabeledLinks<any, T>();
         node.linkToNodeBy(nextNode, label);
       }
 

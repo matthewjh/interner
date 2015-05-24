@@ -3,7 +3,7 @@ export class NodeWithLabeledLinks<TLabel, TValue> {
   private links: Map<TLabel, NodeWithLabeledLinks<any, any>>;
 
   constructor() {
-    this.links = new Map();
+    this.links = new Map<TLabel, NodeWithLabeledLinks<any, any>>();
   }
 
   linkToNodeBy(node: NodeWithLabeledLinks<any, any>, linkLabel: TLabel): void {

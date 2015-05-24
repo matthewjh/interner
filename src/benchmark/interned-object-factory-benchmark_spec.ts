@@ -68,7 +68,7 @@ xdescribe('benchmark of creating 100 Map entries and then fetching them 1000 tim
   var map: Map<number, Object>;
 
   beforeEach(() => {
-    map = new Map();
+    map = new Map<number, Object>();
   });
 
   runPerformanceBenchmark(() => {
