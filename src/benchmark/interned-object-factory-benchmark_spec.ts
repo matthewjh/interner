@@ -2,6 +2,7 @@ import {InternedObjectFactory} from 'interned-object-factory';
 import {JitInternCache} from 'cache/jit-intern-cache';
 import {TreeInternCache} from 'cache/tree-intern-cache';
 import {InternCache} from 'cache/intern-cache';
+import {Constructor} from 'core-types';
 
 const TIMES_TO_RUN = 100;
 

@@ -15,14 +15,14 @@ export class JitInternCache<T> implements InternCache<T> {
     this.internRecords = [];
   }
 
-  set(obj: T, args: Array<any>) {
+  set(obj: T, args: Array<any>): void {
     var internRecord = new InternRecord(obj, args);
 
     this.internRecords.push(internRecord);
     this.getIntern = this.generateGetInternFunction();
   }
 
-  get(args: Array<any>) {
+  get(args: Array<any>): T {
     return this.getIntern(args);
   }
 
