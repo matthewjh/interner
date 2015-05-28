@@ -30,7 +30,7 @@ class ClassWithComplexParameters {
     var internCache: InternCache<ClassWithSimpleParameters>;
 
     beforeEach(() => {
-      internCache = new InternCacheImpl<ClassWithSimpleParameters>(1);
+      internCache = new InternCacheImpl<ClassWithSimpleParameters>();
       internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
     });
 
