@@ -2,6 +2,7 @@ import {InternedObjectFactory, AbstractInternedObjectFactory} from 'interned-obj
 import {JitInternCache} from 'cache/jit-intern-cache';
 import {TreeInternCache} from 'cache/tree-intern-cache';
 import {InternCache} from 'cache/intern-cache';
+import {Constructor} from 'core-types';
 
 var returnValue = {};
 
@@ -22,14 +23,14 @@ class ClassWithComplexParameters {
 [
   JitInternCache,
   TreeInternCache
-].forEach((InternCacheImpl) => {
+].forEach((InternCacheImpl: Constructor<InternCache<any>>) => {
 
   describe(`InternedObjectFactory with ${InternCacheImpl.name}`, () => {
     var internedObjectFactory: InternedObjectFactory<ClassWithSimpleParameters>;
     var internCache: InternCache<ClassWithSimpleParameters>;
 
     beforeEach(() => {
-      internCache = new InternCacheImpl<ClassWithSimpleParameters>();
+      internCache = new InternCacheImpl<ClassWithSimpleParameters>(1);
       internedObjectFactory = new InternedObjectFactory(ClassWithSimpleParameters, internCache);
     });
 
@@ -64,7 +65,7 @@ class ClassWithComplexParameters {
       });
     });
 
-     describe('class with complex parameters', () => {
+    describe('class with complex parameters', () => {
       var internedObjectFactory: InternedObjectFactory<ClassWithComplexParameters>,
           internCache: InternCache<ClassWithComplexParameters>,
           param1: ClassWithSimpleParameters,
