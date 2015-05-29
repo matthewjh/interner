@@ -18,7 +18,7 @@ module.exports = function(config) {
       'node_modules/requirejs/require.js',
 
       {pattern: 'node_modules/es6-shim/es6-shim.js', included: false},
-      {pattern: 'built/**/*.js', included: false},
+      {pattern: 'src/**/*.ts', included: false},
 
       'test_main.js'
     ],
@@ -27,6 +27,29 @@ module.exports = function(config) {
     // list of files to exclude
     exclude: [
     ],
+
+
+    // preprocess matching files before serving them to the browser
+    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+    preprocessors: {
+      '**/*.ts': ['typescript']
+    },
+
+    typescriptPreprocessor: {
+      // options passed to the typescript compiler 
+      options: { 
+        module: 'amd', // (optional) Specify module code generation: 'commonjs' or 'amd' 
+        noImplicitAny: true, // (optional) Warn on expressions and declarations with an implied 'any' type. 
+      },
+      // extra typing definitions to pass to the compiler (globs allowed) 
+      typings: [
+        'typings/**/*.d.ts',
+      ],
+      // transforming the filenames 
+      transformPath: function(path) {
+        return path.replace(/\.ts$/, '.js');
+      }
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
