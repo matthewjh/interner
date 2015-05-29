@@ -37,7 +37,7 @@ function runPerformanceBenchmark(fn: Function) {
 [
   JitInternCache,
   TreeInternCache
-].forEach((InternCacheImpl) => {
+].forEach((InternCacheImpl: Constructor<InternCache<any>>) => {
 
   xdescribe(`InternedObjectFactory with ${InternCacheImpl.name}: benchmark of creating 100 interns and then fetching them 1000 times each`, () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;

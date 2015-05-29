@@ -28,7 +28,7 @@ define(["require", "exports", 'interned-object-factory', 'cache/jit-intern-cache
             var internedObjectFactory;
             var internCache;
             beforeEach(function () {
-                internCache = new InternCacheImpl(1);
+                internCache = new InternCacheImpl();
                 internedObjectFactory = new interned_object_factory_1.InternedObjectFactory(ClassWithSimpleParameters, internCache);
             });
             describe('class with simple parameters', function () {
